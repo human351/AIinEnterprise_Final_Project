@@ -9,10 +9,9 @@ app = Flask(__name__)
 socketio = SocketIO(app)
 
 model = YOLO('yolov8n.pt')
-classes_to_count = [0, 2]
+classes_to_count = [0] # 0 for person 
 
 counter = solutions.ObjectCounter(view_img=True, reg_pts=[(20, 400), (1080, 400)], names=model.names, draw_tracks=True, line_thickness=2 )
-classes_to_count = [0, 2]
 def encode_frame(frame):
     """Encode the frame as base64 for JSON serialization."""
     _, buffer = cv2.imencode('.jpg', frame)
