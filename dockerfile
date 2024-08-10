@@ -1,31 +1,31 @@
-# Use the official Python base image
+# Use the official Python image as a parent image
 FROM python:3.11-slim
 
 # Set environment variables
-ENV FLASK_APP=app.py
-ENV FLASK_RUN_HOST=0.0.0.0
-ENV FLASK_RUN_PORT=8080
-ENV PORT=8080
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-# Create and set the working directory
+# Set the working directory
 WORKDIR /app
 
-# Copy the requirements file
-COPY requirements.txt requirements.txt
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies
+# Copy the requirements file into the container
+COPY requirements.txt /app/
+
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application code and templates into the container
-COPY app.py .
-COPY templates/ templates/
+# Copy the rest of the application code into the container
+COPY . /app/
 
-# Ensure the directories for uploads and output exist
-RUN mkdir -p uploads output
-
-# Expose the port Flask runs on
+# Expose port 8080
 EXPOSE 8080
 
-# Run the Flask application
-CMD ["flask", "run"]
-
+# Set the command to run the application using Gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]
