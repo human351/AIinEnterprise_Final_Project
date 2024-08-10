@@ -3,9 +3,10 @@ opencv-python-headless
 ultralytics
 python-dotenv
 gunicorn
-
+shapely>=2.0.0
 # Additional dependencies
 numpy
 scipy
 torch  # PyTorch
 Pillow  # Image processing
+lapx>=0.5.2
