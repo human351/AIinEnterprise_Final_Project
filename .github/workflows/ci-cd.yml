@@ -27,7 +27,7 @@ jobs:
         docker build -t gcr.io/${{ secrets.GCP_PROJECT }}/headcount-detection:latest .
 
     - name: Authenticate Docker to GCP
-      run: gcloud auth configure-docker
+      run: gcloud auth configure-docker.
 
     - name: Push Docker image to Google Container Registry
       run: |
