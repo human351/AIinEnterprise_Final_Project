@@ -1,0 +1,11 @@
+flask
+opencv-python-headless
+ultralytics
+python-dotenv
+gunicorn
+
+# Additional dependencies
+numpy
+scipy
+torch  # PyTorch
+Pillow  # Image processing
