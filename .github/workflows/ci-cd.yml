@@ -20,7 +20,15 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
-
+      
+      - name: python health checks
+  # You may pin to the exact commit or the version.
+  # uses: Equator-AI/python-health-checks@f705f542e52c953e49f56ffa85478ecbd2bf4600
+        uses: Equator-AI/python-health-checks@v2.1.2
+        
+      - name: Run tests
+        run: pytest
+      
       - name: Deploy to Google Cloud Run
         run: |
           gcloud run deploy my-app \
