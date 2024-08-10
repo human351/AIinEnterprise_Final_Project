@@ -1,7 +1,7 @@
 import os
 import time
 import cv2
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from flask import Flask, render_template, request, redirect, send_from_directory
 from ultralytics import YOLO, solutions
 from dotenv import load_dotenv
 
@@ -19,9 +19,6 @@ TARGET_HEIGHT = int(os.getenv('TARGET_HEIGHT', 480))
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['OUTPUT_FOLDER'] = OUTPUT_FOLDER
-
-# Load the YOLO model
-model = YOLO("yolov8n.pt")
 
 # Ensure the directories exist
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -73,10 +70,9 @@ def upload_image():
 
             im0 = resize_and_pad(im0, TARGET_WIDTH, TARGET_HEIGHT)
 
-            # Define region points as a polygon with 5 points
+            # Initialize YOLO model and Object Counter within the request
+            model = YOLO("yolov8n.pt")
             region_points = [(20, 400), (1080, 404), (1080, 360), (20, 360), (20, 400)]
-
-            # Init Object Counter
             counter = solutions.ObjectCounter(
                 view_img=True,
                 reg_pts=region_points,
@@ -115,4 +111,5 @@ def output_file(filename):
     return send_from_directory(app.config['OUTPUT_FOLDER'], filename)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 8080)))
+
+    app.run(host='0.0.0.0', port=8080, debug=True)
