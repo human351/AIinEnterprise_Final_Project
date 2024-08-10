@@ -3,11 +3,11 @@ name: Docker CI/CD Pipeline
 on:
   push:
     branches:
-      - main  # Change if your default branch is different
+      - main  
   pull_request:
     branches:
-      - main  # Change if your default branch is different
-
+      - main  
+      
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
