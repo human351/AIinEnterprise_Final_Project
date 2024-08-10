@@ -1,8 +1,0 @@
-runtime: python39
-entrypoint: gunicorn -b :$PORT app:app
-
-env_variables:
-  UPLOAD_FOLDER: "/app/uploads"
-  OUTPUT_FOLDER: "/app/output"
-  TARGET_WIDTH: "640"
-  TARGET_HEIGHT: "480"
