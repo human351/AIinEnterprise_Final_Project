@@ -10,3 +10,4 @@ scipy
 torch  # PyTorch
 Pillow  # Image processing
 lapx>=0.5.2
+

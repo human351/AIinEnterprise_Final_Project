@@ -1,0 +1,52 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - New_App  # Replace with your branch name
+  pull_request:
+    branches:
+      - main
+      - New_App
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Lint with Flake8
+        run: |
+          pip install flake8
+          flake8 .
+
+      - name: Run tests
+        run: |
+          pytest tests/
+
+      - name: Deploy to Google Cloud Run
+        run: |
+          gcloud run deploy my-app \
+          --image gcr.io/$PROJECT_ID/$REPO_NAME:$GITHUB_SHA \
+          --region us-central1 \
+          --platform managed \
+          --allow-unauthenticated
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          REPO_NAME: AIinEnterprise_Final_Project_group9  # Replace with your repository name
+
+      - name: Run integration tests
+        run: |
+          curl https://aiinenterprise-final-project-group9-u64ezt75sq-uc.a.run.app || exit 1
+          pytest integration_tests/
