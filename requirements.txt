@@ -1,3 +1,4 @@
+pytest
 flask
 opencv-python-headless
 ultralytics
