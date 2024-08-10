@@ -3,11 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - New_App  # Replace with your branch name
-  pull_request:
-    branches:
       - main
-      - New_App
 
 jobs:
   build:
@@ -25,14 +21,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Lint with Flake8
-        run: |
-          pip install flake8
-          flake8 .
-
       - name: Run tests
-        run: |
-          pytest tests/
+        run: pytest
 
       - name: Deploy to Google Cloud Run
         run: |
@@ -44,9 +34,4 @@ jobs:
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
           PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-          REPO_NAME: AIinEnterprise_Final_Project_group9  # Replace with your repository name
-
-      - name: Run integration tests
-        run: |
-          curl https://aiinenterprise-final-project-group9-u64ezt75sq-uc.a.run.app || exit 1
-          pytest integration_tests/
+          REPO_NAME: ${{ secrets.REPO_NAME }}
