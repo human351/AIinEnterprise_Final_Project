@@ -1,0 +1,42 @@
+name: Docker CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Change if your default branch is different
+  pull_request:
+    branches:
+      - main  # Change if your default branch is different
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: ${{ secrets.GCP_PROJECT }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Build Docker image
+      run: |
+        docker build -t gcr.io/${{ secrets.GCP_PROJECT }}/headcount-detection:latest .
+
+    - name: Authenticate Docker to GCP
+      run: gcloud auth configure-docker
+
+    - name: Push Docker image to Google Container Registry
+      run: |
+        docker push gcr.io/${{ secrets.GCP_PROJECT }}/headcount-detection:latest
+
+    - name: Deploy to Google Cloud Run
+      run: |
+        gcloud run deploy headcount-detection \
+          --image gcr.io/${{ secrets.GCP_PROJECT }}/headcount-detection:latest \
+          --platform managed \
+          --region ${{ secrets.GCP_REGION }} \
+          --allow-unauthenticated
